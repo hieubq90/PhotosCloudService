@@ -1,3 +1,8 @@
 
-photos_cloud_service/vendor/github\.com/
-photos_cloud_service/vendor/go\.uber\.org/
+photos_cloud_service/vendor/src
+
+photos_cloud_service/pkg
+
+photos_cloud_service/bin/photos_cloud_service
+
+photos_cloud_service/\.idea/workspace\.xml
