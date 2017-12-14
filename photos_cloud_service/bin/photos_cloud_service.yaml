@@ -1,0 +1,23 @@
+################
+# Base Setting #
+################
+listen_host: 0.0.0.0
+listen_port: 2701
+maxprocs: 4
+# run_mode: dev | prod
+run_mode: dev
+demo: false
+allow_origins:
+  - http://locahost:2701
+  - http://127.0.0.1:2701
+  - http://mobilelab.vn
+  - https://mobilelab.vn
+allow_methods:
+  - POST
+allow_file_types:
+  - image/png
+  - image/jpeg
+# body_limit_size unit in MB
+body_limit_size: 10
+save_location: /usr/share/nginx/html/
+download_domain: http://127.0.0.1/
