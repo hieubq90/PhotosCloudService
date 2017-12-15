@@ -69,11 +69,23 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/tj/go-debug",
+			"repository": "https://github.com/tj/go-debug",
+			"revision": "ff4a55a20a86994118644bbddc6a216da193cc13",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/ugorji/go/codec",
 			"repository": "https://github.com/ugorji/go",
 			"revision": "0e0d6e869525973a9b36093f6ddc9d91b9fc2d71",
 			"branch": "master",
 			"path": "/codec"
+		},
+		{
+			"importpath": "github.com/visionmedia/go-debug",
+			"repository": "https://github.com/visionmedia/go-debug",
+			"revision": "ff4a55a20a86994118644bbddc6a216da193cc13",
+			"branch": "master"
 		},
 		{
 			"importpath": "golang.org/x/crypto/acme",
@@ -107,6 +119,12 @@
 			"importpath": "gopkg.in/go-playground/validator.v8",
 			"repository": "https://gopkg.in/go-playground/validator.v8",
 			"revision": "5f1438d3fca68893a817e4a66806cea46a9e4ebf",
+			"branch": "master"
+		},
+		{
+			"importpath": "gopkg.in/h2non/bimg.v1",
+			"repository": "https://gopkg.in/h2non/bimg.v1",
+			"revision": "8aff78e4ec8e8b66c753bafb27374488009cfb36",
 			"branch": "master"
 		},
 		{
