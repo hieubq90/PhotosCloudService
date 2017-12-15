@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"handlers"
 	"log"
 	"models"
 	"net/http"
@@ -62,7 +63,8 @@ func main() {
 			defer close(c)
 			for {
 				newImage := <-c
-				go fmt.Println("[RESIZE_HANDLER] receive new file %s", newImage)
+				fmt.Println("[RESIZE_HANDLER] receive new file %s", newImage)
+				go handlers.DoResize(newImage)
 			}
 		}(newFileChanel)
 
