@@ -2,22 +2,34 @@
 # Base Setting #
 ################
 listen_host: 0.0.0.0
-listen_port: 2701
-maxprocs: 4
+listen_port: 27101
+maxprocs: 8
 # run_mode: dev | prod
-run_mode: dev
+run_mode: prod
 demo: false
 allow_origins:
   - http://locahost:2701
   - http://127.0.0.1:2701
   - http://mobilelab.vn
   - https://mobilelab.vn
+  - http://dev.aibot.mobilelab.vn
+  - https://dev.aibot.mobilelab.vn
+  - http://dev2.aibot.mobilelab.vn
+  - https://dev2.aibot.mobilelab.vn
+  - http://aibot.mobilelab.vn
+  - https://aibot.mobilelab.vn
+  - https://photo.mobilelab.vn
+  - http://localhost:3001
+  - http://localhost:3002
 allow_methods:
   - POST
 allow_file_types:
   - image/png
   - image/jpeg
+resize_opts:
+  - 320
+  - 720
 # body_limit_size unit in MB
 body_limit_size: 10
-save_location: /usr/share/nginx/html/
-download_domain: http://127.0.0.1/
+save_location: /home/hieubq/test_photo/
+download_domain: https://photo.mobilelab.vn/

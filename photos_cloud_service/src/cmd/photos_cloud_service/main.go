@@ -63,7 +63,6 @@ func main() {
 			defer close(c)
 			for {
 				newImage := <-c
-				fmt.Println("[RESIZE_HANDLER] receive new file %s", newImage)
 				go handlers.DoResize(newImage)
 			}
 		}(newFileChanel)
@@ -88,7 +87,7 @@ func main() {
 				if app_config.AppConfig.IsAllowedFileType(realFileType) {
 					// allowed to upload
 					// get file extension
-					ext := utils.GetFileExtension(file.Filename)
+					ext := utils.GetFileExtension(realFileType)
 					// 1. generate new name
 					fileName := fmt.Sprintf("%s.%s", uuid.NewV4(), ext)
 					folderName := utils.GetCurrentFormatDate()
@@ -119,6 +118,7 @@ func main() {
 
 		// Start listen
 		endPoint := fmt.Sprintf("%s:%d", app_config.AppConfig.ListenHost, app_config.AppConfig.ListenPort)
+		fmt.Printf("[PhotosCloudService] Started listen on: %s\n", endPoint)
 		srv := &http.Server{
 			Addr:    endPoint,
 			Handler: router,
@@ -126,10 +126,9 @@ func main() {
 
 		go func() {
 			// service connections
+			fmt.Printf("[PhotosCloudService] Started listen on: %s\n", endPoint)
 			if err := srv.ListenAndServe(); err != nil {
 				fmt.Printf("[PhotosCloudService] Starting error: %s\n", err)
-			} else {
-				fmt.Printf("[PhotosCloudService] Started listen on: %s\n", endPoint)
 			}
 		}()
 
