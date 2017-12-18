@@ -1,9 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"handlers"
+	"log"
 	"models"
 	"net/http"
+	"os"
+	"os/signal"
+	"runtime"
 	"strings"
 	"time"
 	"utils"
@@ -18,6 +24,7 @@ import (
 
 func main() {
 	if app_config.InitFromYAML() {
+		runtime.GOMAXPROCS(app_config.AppConfig.RuntimeMaxProcs)
 		// setup Gin run mode
 		if strings.Compare(app_config.AppConfig.RunMode, "prod") == 0 {
 			gin.SetMode(gin.ReleaseMode)
@@ -48,6 +55,18 @@ func main() {
 			router.Static("/", "./public")
 		}
 
+		// make chanel to receive handle new uploaded file need resize
+		newFileChanel := make(chan string, 100000)
+
+		// start a RESIZE_HANDLER function
+		go func(c chan string) {
+			defer close(c)
+			for {
+				newImage := <-c
+				go handlers.DoResize(newImage)
+			}
+		}(newFileChanel)
+
 		// Handle Upload request
 		router.POST("/upload", func(c *gin.Context) {
 			// 1. Create Uploaded Response Data
@@ -68,7 +87,7 @@ func main() {
 				if app_config.AppConfig.IsAllowedFileType(realFileType) {
 					// allowed to upload
 					// get file extension
-					ext := utils.GetFileExtension(file.Filename)
+					ext := utils.GetFileExtension(realFileType)
 					// 1. generate new name
 					fileName := fmt.Sprintf("%s.%s", uuid.NewV4(), ext)
 					folderName := utils.GetCurrentFormatDate()
@@ -83,6 +102,8 @@ func main() {
 						uploadedFiles = append(uploadedFiles, fmt.Sprintf("get form err: %s", err.Error()))
 					} else {
 						uploadedFiles = append(uploadedFiles, fmt.Sprintf("%s%s/%s", app_config.AppConfig.DownloadDomain, folderName, fileName))
+						newImage := fmt.Sprintf("%s/%s", filePath, fileName)
+						newFileChanel <- newImage
 					}
 				} else {
 					// not allowed to upload
@@ -93,5 +114,36 @@ func main() {
 				Files: uploadedFiles,
 			})
 		})
+
+
+		// Start listen
+		endPoint := fmt.Sprintf("%s:%d", app_config.AppConfig.ListenHost, app_config.AppConfig.ListenPort)
+		fmt.Printf("[PhotosCloudService] Started listen on: %s\n", endPoint)
+		srv := &http.Server{
+			Addr:    endPoint,
+			Handler: router,
+		}
+
+		go func() {
+			// service connections
+			fmt.Printf("[PhotosCloudService] Started listen on: %s\n", endPoint)
+			if err := srv.ListenAndServe(); err != nil {
+				fmt.Printf("[PhotosCloudService] Starting error: %s\n", err)
+			}
+		}()
+
+		// Wait for interrupt signal to gracefully shutdown the server with
+		// a timeout of 5 seconds.
+		quit := make(chan os.Signal)
+		signal.Notify(quit, os.Interrupt)
+		<-quit
+		log.Println("Shutdown PhotosCloudService ...")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			fmt.Println("PhotosCloudService Shutdown:", err)
+		}
+		fmt.Println("PhotosCloudService exiting")
 	}
 }
