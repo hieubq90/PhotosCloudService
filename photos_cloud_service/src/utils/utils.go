@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	IMG_TYPE_JPEG = "image/jpeg"
+	IMG_TYPE_PNG = "image/png"
+)
+
 func GetFileType(fileHeader *multipart.FileHeader) string {
 	file, _ := fileHeader.Open() // or get your file from a file system
 	defer file.Close()
@@ -20,12 +25,19 @@ func GetFileType(fileHeader *multipart.FileHeader) string {
 	return http.DetectContentType(buff)
 }
 
-func GetFileExtension(filename string) string {
-	strs := strings.Split(filename, ".")
-	if len(strs) > 1 {
-		return strs[len(strs)-1]
+func GetFileExtension(fileType string) string {
+	if strings.Compare(fileType, IMG_TYPE_JPEG) == 0 {
+		return "jpg"
 	}
-	return ""
+	if strings.Compare(fileType, IMG_TYPE_PNG) == 0 {
+		return "png"
+	}
+	return "unknown"
+}
+
+func GetFilePathAndName(filename string) (string, string) {
+	index := strings.LastIndex(filename, "/")
+	return filename[:index+1], filename[index:]
 }
 
 func GetCurrentFormatDate() string {

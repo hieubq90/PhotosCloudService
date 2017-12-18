@@ -12,8 +12,8 @@ import (
 
 type AppConfiguration struct {
 	// Base settings
-	ListenHost      string   `yaml:"listten_host"`
-	ListenPort      int      `yaml:"listten_port"`
+	ListenHost      string   `yaml:"listen_host"`
+	ListenPort      int      `yaml:"listen_port"`
 	RuntimeMaxProcs int      `yaml:"maxprocs"`
 	RunMode         string   `yaml:"run_mode"`
 	HandleDemo      bool     `yaml:"demo"`
@@ -23,6 +23,7 @@ type AppConfiguration struct {
 	BodyLimitSize   int      `yaml:"body_limit_size"`
 	SaveLocation    string   `yaml:"save_location"`
 	DownloadDomain  string   `yaml:"download_domain"`
+	Resize_Options  []int    `yaml:"resize_opts"`
 }
 
 var AppConfig *AppConfiguration
@@ -60,6 +61,7 @@ func InitFromYAML() bool {
 	}
 
 	AppConfig = &c
+	fmt.Println(AppConfig)
 
 	fmt.Println("[PhotosCloudService] Load configurations successful!")
 	return true
